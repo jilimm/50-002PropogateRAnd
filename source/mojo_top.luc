@@ -1,0 +1,79 @@
+
+module mojo_top (
+//pressing buttons will make the LED lights light up
+    input clk,              // 50MHz clock
+    input rst,            // reset button (active low)
+    //output high2,
+    //output high1,
+    //output high3,
+    //output low1,
+    //output low2,
+    input cclk,             // configuration clock, AVR ready when high
+    output spi_miso,        // AVR SPI MISO
+    input spi_ss,           // AVR SPI Slave Select
+    input spi_mosi,         // AVR SPI MOSI
+    input spi_sck,          // AVR SPI Clock
+    output spi_channel [4], // AVR general purpose pins (used by default to select ADC channel)
+    input avr_tx,           // AVR TX (FPGA RX)
+    output avr_rx,          // AVR RX (FPGA TX)
+    input avr_rx_busy,       // AVR RX buffer full
+    output low1,
+    output low2,
+    output high1,
+    output high2,
+    output high3,
+    output low3,
+    output led[8],
+    output io_led[3][8]
+    
+  ) {
+
+  .clk(clk) {
+    .rst(rst){
+     // randomize myrandomizer;
+      //propogate mypropogater;
+      
+      //stop the clock?????
+      
+      
+       propogate mypropogater;
+       randomize myrandonmizer; 
+      //utilize small clock implementation
+    }
+     
+  }
+  
+  //sig testnum[2];
+  //**********
+  //this code propogates output of randomizer (which is stuckat 101)
+  //but it propogates fuuuuuccckkkkkkingggg slowly 
+ //*************
+   
+  always{
+  
+    spi_miso = bz;          // not using SPI
+    spi_channel = bzzzz;    // not using flags
+    avr_rx = bz;            // not using serial port
+    
+    //myrandonmizer.rowNum=2b0; //initialise the randomizer to generate number
+    
+    
+    //mypropogater.num=3b101;
+    
+    mypropogater.num = myrandonmizer.num;
+    myrandonmizer.rowNum = mypropogater.rowLit;
+    high1 = mypropogater.row1;
+    high2 = mypropogater.row2;
+    high3 = mypropogater.row3;
+    
+    low1=mypropogater.numOut[0];
+    low2=mypropogater.numOut[1];
+    low3=mypropogater.numOut[2]; 
+    
+    led[2:0] = myrandonmizer.num;
+    led[7:3] = 5b0;
+    io_led[0][0] = mypropogater.row1;
+    io_led[0][1] = mypropogater.row2;
+    io_led[0][2] = mypropogater.row3;   
+  }
+}

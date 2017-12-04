@@ -1,0 +1,74 @@
+module randomize (
+    input clk,  // clock
+    input rst,  // reset
+    input rowNum[2], //ctr value
+    output num[3]  //random number outputt-ed
+  ) {
+  
+  //interal check is the number generated 2b00?
+ 
+  
+  .clk(clk) {
+    .rst(rst){
+      dff seed[32]; //not really helpful
+      fsm state = {GENERATE, REST};
+      //dff counter [3]; //rests the counter every 8 beats
+     }
+     pn_gen pn_gen;
+      //use a dff to implement seed maybe with different seed it will output different numbers?
+     
+    //lights only appear when u reset the generator
+  }
+
+  always {
+  
+    //num = 3b101;//randomize number is stuck at 101 --> dont connect this
+    pn_gen.seed=seed.q; //seed of random number generator
+    pn_gen.next=1; //generate a new number by default
+    num=pn_gen.num[2:0];
+    pn_gen.rst = rst; 
+    
+    case (state.q){
+      state.GENERATE:
+      if (rowNum==2b11){
+        pn_gen.next=1;
+        //counter.d = counter.q +1; 
+        //counter.d = counter.q +1; //generate a new seed to make new random number
+        state.d = state.REST;
+        pn_gen.rst=1;     //something will come out only if i put the rst=1 idk why halp  
+        
+       }
+    
+    state.REST:
+      pn_gen.next=0;
+      seed.d = seed.q+1;
+      //pn_gen.rst=1; //this rest shouldnt matter
+        
+      //default:
+      //state.d = state.GENERATE;
+    }
+           
+      
+    //if (rowNum==2b11){
+    //  pn_gen.next=1; //dont generate new number
+    //  pn_gen.rst=1;
+    //}
+    //  else if (pn_gen.num[2:0]==3b000){
+    //  pn_gen.next=1;
+    //  pn_gen.rst=1;
+    //  }
+      //at the last row I need a new number
+    
+    //  else if (!pn_gen.num[2:0]==3b000){
+     //  pn_gen.next=0; 
+     //  pn_gen.rst=1;    //check if the new number generated is 2b00
+    //  }
+        //number generated is not 00
+     //else{
+     //   pn_gen.next=0;
+      //  pn_gen.rst=1;
+        //pn_gen.rst=1;   //output number generated   
+     //   }
+        
+ }
+}
