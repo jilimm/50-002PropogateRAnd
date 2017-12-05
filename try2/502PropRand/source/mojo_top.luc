@@ -1,0 +1,94 @@
+module mojo_top (
+    input clk,              // 50MHz clock
+    input rst_n,            // reset button (active low)
+    output led [8],         // 8 user controllable LEDs
+    input cclk,             // configuration clock, AVR ready when high
+    output spi_miso,        // AVR SPI MISO
+    input spi_ss,           // AVR SPI Slave Select
+    input spi_mosi,         // AVR SPI MOSI
+    input spi_sck,          // AVR SPI Clock
+    output spi_channel [4], // AVR general purpose pins (used by default to select ADC channel)
+    input avr_tx,           // AVR TX (FPGA RX)
+    output avr_rx,          // AVR RX (FPGA TX)
+    input avr_rx_busy,      // AVR RX buffer full
+    output low1,
+    output low2,
+    output low3,
+    output high1,
+    output high2,
+    output high3,
+    output io_led[3][8]
+  ) {
+  
+  sig rst;                  // reset signal
+  
+  .clk(clk) {
+    // The reset conditioner is used to synchronize the reset signal to the FPGA
+    // clock. This ensures the entire FPGA comes out of reset at the same time.
+    reset_conditioner reset_cond;
+    propogate mypropogater;
+    fsm state = {GEN,PROP};
+    dff seed[32];
+    pn_gen pn_gen;
+    dff counter[2];
+  }
+  
+  always {
+    reset_cond.in = ~rst_n; // input raw inverted reset signal
+    rst = reset_cond.out;   // conditioned reset
+    
+    //led = 8h00;             // turn LEDs off
+    spi_miso = bz;          // not using SPI
+    spi_channel = bzzzz;    // not using flags
+    avr_rx = bz;            // not using serial port
+    mypropogater.rst=rst;
+    //pn_gen.seed [32:0]= 32b0;
+    pn_gen.seed=seed.q;
+    pn_gen.next=0;
+    pn_gen.rst=rst;
+    mypropogater.num=pn_gen.num[2:0];
+    //pn_gen.seed[32:3] = 29b0;
+    //pn_gen.seed[2:0] = seed.q;
+    
+    high1 = mypropogater.row1;
+    high2 = mypropogater.row2;
+    high3 = mypropogater.row3;
+    
+    low1=mypropogater.numOut[0];
+    low2=mypropogater.numOut[1];
+    low3=mypropogater.numOut[2]; 
+    
+    //led[2:0] = myrandonmizer.num;
+    led[7:3] = 5b0;
+    io_led[0][0] = mypropogater.row1;
+    io_led[0][1] = mypropogater.row2;
+    io_led[0][2] = mypropogater.row3;
+    
+    case (state.q){
+      state.GEN:
+        seed.d = seed.q+1; //makes first run be 110 and second run 010
+        pn_gen.next=1;
+        counter.d = counter.q+1;
+        if (counter.q == 2x{1}){
+          pn_gen.rst=1;
+          counter.d=2b00;
+        }
+        state.d = state.PROP;
+        
+      state.PROP:
+        pn_gen.next=0;
+        if (mypropogater.rowLit==2b11){
+        state.d=state.GEN;
+          }
+        else{
+        state.d=state.PROP;
+          }
+    //mypropogater.num = myrandonmizer.num;
+    //myrandonmizer.rowNum = mypropogater.rowLit;
+       
+        
+        //changes from 2 lights to only 1 light then stays at 1 light forever
+        //
+  }
+}
+}
