@@ -1,0 +1,23 @@
+module randNum (
+    input clk,  // clock
+    input rst,  // reset
+    output out[3]
+  ) {
+  
+  .clk(clk){
+    .rst(rst){
+    counter slowclk(#SIZE(1),#DIV(24));
+    }
+  }
+  
+  .clk(slowclk.value){
+    .rst(rst){
+    dff ctr[3](#INIT(3b001));
+    }
+  }
+  
+  always {
+    ctr.d = ctr.q + 1;
+    out = ctr.q;
+  }
+}
