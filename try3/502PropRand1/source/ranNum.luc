@@ -1,0 +1,15 @@
+module ranNum (
+    input clk,  // clock
+    input rst,  // reset  //make mojo_top consist of my propogation then connect propogation to my slowclock //my slowclock will remove a number from fast clock register
+    output out[3]
+  ) {
+
+.clk(clk){
+  .rst(rst){
+    dff ctr[3](#INIT(3b001));  
+  
+  always {
+  
+    out = 0;
+  }
+}
