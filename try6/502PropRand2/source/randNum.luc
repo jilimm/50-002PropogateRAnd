@@ -1,0 +1,20 @@
+/*
+module randNum (
+    input clk,  // clock
+    input rst,  // reset
+    output out[3]
+  ) {
+  
+  .clk(clk){
+    .rst(rst){
+      dff count[3](#INIT(3b001));
+    }
+  }
+  
+  always {
+    count.d = count.q
+    ctr.d = ctr.q + 1;
+    out = ctr.q;
+  }
+}
+*/
